@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body {
+            background: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .search-bar {
+            padding: 8px;
+            width: 60%;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+        .cart-button {
+            background: #ff5722;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .cart-button:hover {
+            background: #ff784e;
+        }
+        .menu-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .menu-section {
+            width: 45%;
+            text-align: center;
+        }
+        .menu-category {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+        }
+        .menu-category:hover {
+            background: #ff5722;
+        }
+        .menu-category img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+        .menu-options {
+            display: none;
+            background: #292929;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .option {
+            padding: 10px;
+            margin: 5px;
+            background: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .option:hover {
+            background: #ff5722;
+        }
+        .dish-container {
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .dish-card {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+        }
+        .dish-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+        }
+        .add-to-cart {
+            background: #ff5722;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .add-to-cart:hover {
+            background: #ff784e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <input type="text" class="search-bar" id="searchBox" placeholder="Search for a dish..." onkeyup="searchDishes()">
+        <button class="cart-button" onclick="window.location.href='cart.html'">🛒 Cart</button>
+    </div>
+
+    <h1>Menu</h1>
+
+    <div class="menu-container">
+        <div class="menu-section">
+            <h2>South Indian</h2>
+            <div class="menu-category" onclick="toggleMenu('south')">
+                <img src="img7.jpeg" alt="South Indian">
+                <span>Click to View Menu</span>
+            </div>
+            <div id="south" class="menu-options">
+                <div class="option" onclick="showItems('South Indian Starters')">Starters</div>
+                <div class="option" onclick="showItems('South Indian Main Course')">Main Course</div>
+                <div class="option" onclick="showItems('South Indian Desserts')">Desserts</div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h2>North Indian</h2>
+            <div class="menu-category" onclick="toggleMenu('north')">
+                <img src="img8.jpeg" alt="North Indian">
+                <span>Click to View Menu</span>
+            </div>
+            <div id="north" class="menu-options">
+                <div class="option" onclick="showItems('North Indian Starters')">Starters</div>
+                <div class="option" onclick="showItems('North Indian Main Course')">Main Course</div>
+                <div class="option" onclick="showItems('North Indian Desserts')">Desserts</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dishContainer" class="dish-container"></div>
+
+    <script>
+        function toggleMenu(menuId) {
+            let menus = ["south", "north"];
+            menus.forEach(id => {
+                let menu = document.getElementById(id);
+                menu.style.display = id === menuId && menu.style.display !== "block" ? "block" : "none";
+            });
+            document.getElementById("dishContainer").innerHTML = "";
+            document.getElementById("dishContainer").style.display = "none";
+        }
+
+        let allDishes = {
+    "South Indian Starters": [
+        { name: "Idli", img: "idli.jpg", desc: "Soft steamed rice cakes", price: "₹50" },
+        { name: "Vada", img: "vada.jpg", desc: "Crispy deep-fried lentil doughnuts", price: "₹60" },
+        { name: "Paneer 65", img: "paneer65.jpg", desc: "Spicy deep-fried paneer cubes", price: "₹120" }
+    ],
+    "South Indian Main Course": [
+        { name: "Dosa", img: "dosa.jpg", desc: "Thin, crispy rice crepe", price: "₹80" },
+        { name: "Sambar Rice", img: "sambar_rice.jpg", desc: "Rice mixed with spicy lentil soup", price: "₹100" },
+        { name: "Curd Rice", img: "curd_rice.jpg", desc: "Refreshing rice mixed with yogurt", price: "₹90" }
+    ],
+    "South Indian Desserts": [
+        { name: "Kesari", img: "kesari.jpg", desc: "Sweet semolina pudding", price: "₹70" },
+        { name: "Mysore Pak", img: "mysore_pak.jpg", desc: "Rich gram flour fudge", price: "₹110" },
+        { name: "Payasam", img: "payasam.jpg", desc: "Sweet milk and rice pudding", price: "₹100" }
+    ],
+    "North Indian Starters": [
+        { name: "Paneer Tikka", img: "paneer_tikka.jpg", desc: "Grilled paneer cubes with spices", price: "₹150" },
+        { name: "Aloo Tikki", img: "aloo_tikki.jpg", desc: "Crispy potato cutlets", price: "₹80" },
+        { name: "Samosa", img: "samosa.jpg", desc: "Fried pastry with spiced potato filling", price: "₹50" }
+    ],
+    "North Indian Main Course": [
+        { name: "Butter Naan", img: "butter_naan.jpg", desc: "Soft, buttery flatbread", price: "₹40" },
+        { name: "Paneer Butter Masala", img: "paneer_butter_masala.jpg", desc: "Creamy tomato-based paneer curry", price: "₹180" },
+        { name: "Dal Makhani", img: "dal_makhani.jpg", desc: "Slow-cooked creamy black lentils", price: "₹160" }
+    ],
+    "North Indian Desserts": [
+        { name: "Gulab Jamun", img: "gulab_jamun.jpg", desc: "Soft fried milk dumplings soaked in sugar syrup", price: "₹80" },
+        { name: "Rasgulla", img: "rasgulla.jpg", desc: "Spongy sweet cottage cheese balls", price: "₹90" },
+        { name: "Kheer", img: "kheer.jpg", desc: "Rice pudding with milk and cardamom", price: "₹100" }
+    ]
+};
+
+        function showItems(category) {
+            let dishContainer = document.getElementById("dishContainer");
+            dishContainer.innerHTML = "";
+            dishContainer.style.display = "flex";
+
+            if (allDishes[category]) {
+                allDishes[category].forEach(item => {
+                    let dishCard = document.createElement("div");
+                    dishCard.classList.add("dish-card");
+                    dishCard.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <img src="${item.img}" alt="${item.name}">
+                        <p>${item.desc}</p>
+                        <h4>Price: ${item.price}</h4>
+                        <button class="add-to-cart" onclick="addToCart('${item.name}', '${item.price}', '${item.img}')">Add to Cart</button>
+                    `;
+                    dishContainer.appendChild(dishCard);
+                });
+            }
+        }
+
+        function addToCart(name, price, img) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Ensure price is stored correctly by removing extra ₹ symbols and converting to number
+    let numericPrice = Number(price.replace(/₹/g, '').trim());
+
+    let existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ name, price: numericPrice, img, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(`${name} added to cart!`);
+}
+
+    function searchDishes() {
+    let searchQuery = document.getElementById("searchBox").value.toLowerCase();
+    let dishContainer = document.getElementById("dishContainer");
+    dishContainer.innerHTML = "";
+    dishContainer.style.display = "flex";
+
+    let found = false;
+    
+    Object.keys(allDishes).forEach(category => {
+        allDishes[category].forEach(item => {
+            if (item.name.toLowerCase().includes(searchQuery)) {
+                let dishCard = document.createElement("div");
+                dishCard.classList.add("dish-card");
+                dishCard.innerHTML = `
+                    <h3>${item.name}</h3>
+                    <img src="${item.img}" alt="${item.name}">
+                    <p>${item.desc}</p>
+                    <h4>Price: ${item.price}</h4>
+                    <button class="add-to-cart" onclick="addToCart('${item.name}', '${item.price}', '${item.img}')">Add to Cart</button>
+                `;
+                dishContainer.appendChild(dishCard);
+                found = true;
+            }
+        });
+    });
+
+    if (!found) {
+        dishContainer.innerHTML = "<p>No matching dishes found.</p>";
+    }
+}
+
+    </script>
+
+</body>
+</html>

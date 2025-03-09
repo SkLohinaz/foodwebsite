@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <style>
+        body {
+            background: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .cart-container {
+            max-width: 600px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #292929;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+        }
+        .cart-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .cart-buttons button {
+            background: #ff5722;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .cart-buttons button:hover {
+            background: #ff784e;
+        }
+        .total {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .address-container, .payment-container {
+            margin-top: 20px;
+            text-align: left;
+            background: #292929;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .address-container input, .payment-container select {
+            width: 95%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #1e1e1e;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+        .place-order {
+            margin-top: 20px;
+            background: #ff5722;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+        .place-order:hover {
+            background: #ff784e;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your Cart</h1>
+    <div class="cart-container" id="cartContainer"></div>
+    <h2 class="total" id="totalPrice">Total: ₹0</h2>
+
+    <!-- Address Input -->
+    <div class="address-container">
+        <h3>Delivery Address</h3>
+        <input type="text" id="address" placeholder="Enter your full address">
+    </div>
+
+    <!-- Payment Options -->
+    <div class="payment-container">
+        <h3>Payment Method</h3>
+        <select id="paymentMethod">
+            <option value="cod">Cash on Delivery (COD)</option>
+            <option value="upi">UPI Payment</option>
+            <option value="card">Credit/Debit Card</option>
+        </select>
+    </div>
+
+    <!-- Place Order Button -->
+    <button class="place-order" onclick="placeOrder()">Place Order</button>
+
+    <script>
+        function loadCart() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartContainer = document.getElementById("cartContainer");
+            cartContainer.innerHTML = "";
+            let totalPrice = 0;
+
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+
+                let cartItem = document.createElement("div");
+                cartItem.classList.add("cart-item");
+                cartItem.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <span>${item.name}</span>
+                    <span>₹${item.price} x ${item.quantity} = ₹${itemTotal.toFixed(2)}</span>
+                    <div class="cart-buttons">
+                        <button onclick="updateQuantity(${index}, -1)">-</button>
+                        <button onclick="updateQuantity(${index}, 1)">+</button>
+                        <button onclick="removeItem(${index})">Remove</button>
+                    </div>
+                `;
+                cartContainer.appendChild(cartItem);
+            });
+
+            document.getElementById("totalPrice").textContent = `Total: ₹${totalPrice.toFixed(2)}`;
+        }
+
+        function updateQuantity(index, change) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            if (cart[index]) {
+                cart[index].quantity += change;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                localStorage.setItem("cart", JSON.stringify(cart));
+                loadCart();
+            }
+        }
+
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            loadCart();
+        }
+
+        function placeOrder() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let address = document.getElementById("address").value.trim();
+            let paymentMethod = document.getElementById("paymentMethod").value;
+
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            if (address === "") {
+                alert("Please enter a valid delivery address!");
+                return;
+            }
+
+            let paymentText = paymentMethod === "cod" ? "Cash on Delivery" :
+                              paymentMethod === "upi" ? "UPI Payment" :
+                              "Credit/Debit Card";
+
+            alert(`Order Placed Successfully!\nDelivery to: ${address}\nPayment Mode: ${paymentText}`);
+
+            localStorage.removeItem("cart"); // Clear cart after order
+            window.location.href = "menu.html"; // Redirect back to menu
+        }
+
+        loadCart();
+    </script>
+
+</body>
+</html>
